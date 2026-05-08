@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXIOM Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-icon">⬡</span>
+            <span class="brand-name">AXIOM</span>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a class="nav-item active" onclick="showSection('overview')">
+                <span class="nav-icon">📊</span>
+                <span>Overview</span>
+            </a>
+            <a class="nav-item" onclick="showSection('assets')">
+                <span class="nav-icon">💰</span>
+                <span>My Assets</span>
+            </a>
+            <a class="nav-item" onclick="showSection('portfolio')">
+                <span class="nav-icon">📈</span>
+                <span>Portfolio</span>
+            </a>
+            <a class="nav-item" onclick="showSection('goals')">
+                <span class="nav-icon">🎯</span>
+                <span>Goals</span>
+            </a>
+            <a class="nav-item" onclick="showSection('insights')">
+                <span class="nav-icon">🤖</span>
+                <span>AI Insights</span>
+            </a>
+            <a class="nav-item" onclick="showSection('risk')">
+                <span class="nav-icon">⚠️</span>
+                <span>Risk Score</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1 class="page-title" id="page-title">Financial Overview</h1>
+                <p class="page-subtitle" id="page-subtitle">Your complete financial picture</p>
+            </div>
+            <div class="topbar-right">
+                <button class="btn-add" onclick="showSection('assets')">+ Add Assets</button>
+            </div>
+        </div>
+
+        <!-- OVERVIEW SECTION -->
+        <section id="section-overview" class="content-section active">
+            <div class="networth-hero">
+                <div class="networth-main">
+                    <span class="networth-label">TOTAL NET WORTH</span>
+                    <span class="networth-value" id="total-networth">₹0</span>
+                    <span class="networth-change" id="networth-change">Enter your assets to begin →</span>
+                </div>
+                <div class="networth-breakdown">
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Total Assets</span>
+                        <span class="breakdown-value positive" id="total-assets-display">₹0</span>
+                    </div>
+                    <div class="breakdown-divider">−</div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Total Liabilities</span>
+                        <span class="breakdown-value negative" id="total-liabilities-display">₹0</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 4 STAT CARDS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🏦</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Liquid Cash</span>
+                        <span class="stat-card-value" id="liquid-cash">₹0</span>
+                        <span class="stat-card-sub" id="liquid-percent">0% of assets</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Investments</span>
+                        <span class="stat-card-value" id="total-investments">₹0</span>
+                        <span class="stat-card-sub" id="invest-percent">0% of assets</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏠</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Real Assets</span>
+                        <span class="stat-card-value" id="real-assets">₹0</span>
+                        <span class="stat-card-sub" id="real-percent">0% of assets</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💳</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Total Debt</span>
+                        <span class="stat-card-value" id="total-debt">₹0</span>
+                        <span class="stat-card-sub" id="debt-ratio">0% debt ratio</span>
+                    </div>
+                </div>
+            </div>
+            <!-- END STATS GRID -->
+
+            <!-- ✨ CHARTS START HERE - AFTER STATS GRID -->
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Asset Allocation Chart</h3>
+                        <span class="card-badge">Visual</span>
+                    </div>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📈 Assets vs Liabilities</h3>
+                        <span class="card-badge green">Comparison</span>
+                    </div>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✨ GROWTH PROJECTION (Full Width) -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>🚀 Wealth Growth Projection (Next 20 Years)</h3>
+                    <span class="card-badge">Compound Power</span>
+                </div>
+                <div style="position: relative; height: 350px;">
+                    <canvas id="growthChart"></canvas>
+                </div>
+                <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 16px;">
+                    Based on your monthly investments at 12% annual return
+                </p>
+            </div>
+            <!-- ✨ CHARTS END HERE -->
+                <div class="stat-card">
+                    <div class="stat-icon">🏠</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Real Assets</span>
+                        <span class="stat-card-value" id="real-assets">₹0</span>
+                        <span class="stat-card-sub" id="real-percent">0% of assets</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💳</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Total Debt</span>
+                        <span class="stat-card-value" id="total-debt">₹0</span>
+                        <span class="stat-card-sub" id="debt-ratio">0% debt ratio</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Asset Allocation</h3>
+                    </div>
+                    <div id="allocation-bars">
+                        <div class="empty-state">
+                            <span>📊</span>
+                            <p>Add assets to see allocation</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Financial Health Score</h3>
+                    </div>
+                    <div class="health-score-container">
+                        <div class="health-score-circle">
+                            <span class="health-score-number" id="health-score">--</span>
+                            <span class="health-score-label">/ 100</span>
+                        </div>
+                        <div class="health-metrics">
+                            <div class="health-metric">
+                                <span class="metric-name">Emergency Fund</span>
+                                <span class="metric-status" id="emergency-status">❓ Add data</span>
+                            </div>
+                            <div class="health-metric">
+                                <span class="metric-name">Investment Rate</span>
+                                <span class="metric-status" id="invest-status">❓ Add data</span>
+                            </div>
+                            <div class="health-metric">
+                                <span class="metric-name">Debt Level</span>
+                                <span class="metric-status" id="debt-status">❓ Add data</span>
+                            </div>
+                            <div class="health-metric">
+                                <span class="metric-name">Diversification</span>
+                                <span class="metric-status" id="divers-status">❓ Add data</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>🤖 AI Quick Insights</h3>
+                    <button class="btn-text" onclick="showSection('insights')">See All →</button>
+                </div>
+                <div class="insights-preview" id="insights-preview">
+                    <div class="empty-state">
+                        <span>🤖</span>
+                        <p>Add your financial data to get AI insights</p>
+                        <button class="btn-primary-small" onclick="showSection('assets')">
+                            Add Assets Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ASSETS SECTION -->
+        <section id="section-assets" class="content-section">
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>💰 Your Assets</h3>
+                        <span class="card-badge green">What You Own</span>
+                    </div>
+
+                    <div class="input-group-label">LIQUID ASSETS</div>
+                    <div class="input-row">
+                        <label>Savings Account (₹)</label>
+                        <input type="number" id="savings" placeholder="0" oninput="calculateAll()">
+                    </div>
+                    <div class="input-row">
+                        <label>Fixed Deposits (₹)</label>
+                        <input type="number" id="fd" placeholder="0" oninput="calculateAll()">
+                    </div>
+                    <div class="input-row">
+                        <label>Cash in Hand (₹)</label>
+                        <input type="number" id="cash" placeholder="0" oninput="calculateAll()">
+                    </div>
+
+                    <div class="input-group-label">INVESTMENTS</div>
+                    <div class="input-row">
+                        <label>Mutual Funds (₹)</label>
+                        <input type="number" id="mutual_funds" placeholder="0" oninput="calculateAll()">
+                    </div>
+                    <div class="input-row">
+                        <label>Stock Portfolio (₹)</label>
+                        <input type="number" id="stocks" placeholder="0" oninput="calculateAll()">
+                    </div>
+                    <div class="input-row">
+                        <label>PPF / EPF (₹)</label>
+                        <input type="number" id="ppf" placeholder="0" oninput="calculateAll()">
+                    </div>
+                    <div class="input-row">
+                        <label>NPS (₹)</label>
+                        <input type="number" id="nps" placeholder="0" oninput="calculateAll()">
+                    </div>
+                    <div class="input-row">
+                        <label>Cryptocurrency (₹)</label>
+                        <input type="number" id="crypto" placeholder="0" oninput="calculateAll()">
+                    </div>
+
+                    <div class="input-group-label">REAL ASSETS</div>
+                    <div class="input-row">
+                        <label>Property Value (₹)</label>
+                        <input type="number" id="property" placeholder="0" oninput="calculateAll()">
+                    </div>
+                    <div class="input-row">
+                        <label>Gold / Silver (₹)</label>
+                        <input type="number" id="gold" placeholder="0" oninput="calculateAll()">
+                    </div>
+                    <div class="input-row">
+                        <label>Vehicle Value (₹)</label>
+                        <input type="number" id="vehicle" placeholder="0" oninput="calculateAll()">
+                    </div>
+                    <div class="input-row">
+                        <label>Business Value (₹)</label>
+                        <input type="number" id="business" placeholder="0" oninput="calculateAll()">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>💳 Your Liabilities</h3>
+                            <span class="card-badge red">What You Owe</span>
+                        </div>
+                        <div class="input-row">
+                            <label>Home Loan Outstanding (₹)</label>
+                            <input type="number" id="home_loan" placeholder="0" oninput="calculateAll()">
+                        </div>
+                        <div class="input-row">
+                            <label>Car Loan (₹)</label>
+                            <input type="number" id="car_loan" placeholder="0" oninput="calculateAll()">
+                        </div>
+                        <div class="input-row">
+                            <label>Personal Loan (₹)</label>
+                            <input type="number" id="personal_loan" placeholder="0" oninput="calculateAll()">
+                        </div>
+                        <div class="input-row">
+                            <label>Education Loan (₹)</label>
+                            <input type="number" id="edu_loan" placeholder="0" oninput="calculateAll()">
+                        </div>
+                        <div class="input-row">
+                            <label>Credit Card Due (₹)</label>
+                            <input type="number" id="credit_card" placeholder="0" oninput="calculateAll()">
+                        </div>
+                        <div class="input-row">
+                            <label>Other Loans (₹)</label>
+                            <input type="number" id="other_loans" placeholder="0" oninput="calculateAll()">
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-header">
+                            <h3>📋 Income and Expenses</h3>
+                            <span class="card-badge">Monthly</span>
+                        </div>
+                        <div class="input-row">
+                            <label>Monthly Income (₹)</label>
+                            <input type="number" id="monthly_income" placeholder="0" oninput="calculateAll()">
+                        </div>
+                        <div class="input-row">
+                            <label>Monthly Expenses (₹)</label>
+                            <input type="number" id="monthly_expenses" placeholder="0" oninput="calculateAll()">
+                        </div>
+                        <div class="input-row">
+                            <label>Monthly Investments (₹)</label>
+                            <input type="number" id="monthly_invest" placeholder="0" oninput="calculateAll()">
+                        </div>
+                        <div class="input-row">
+                            <label>Monthly EMIs (₹)</label>
+                            <input type="number" id="monthly_emi" placeholder="0" oninput="calculateAll()">
+                        </div>
+                        <div class="input-row">
+                            <label>Your Age</label>
+                            <input type="number" id="user_age" placeholder="18" oninput="calculateAll()">
+                        </div>
+                    </div>
+
+                    <button class="btn-full" onclick="saveData()">
+                        Save My Financial Data
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTFOLIO SECTION -->
+        <section id="section-portfolio" class="content-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Total Invested</span>
+                        <span class="stat-card-value" id="port-invested">₹0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💹</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Investment Percent</span>
+                        <span class="stat-card-value" id="port-percent">0%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Largest Position</span>
+                        <span class="stat-card-value" id="port-largest">None</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-info">
+                        <span class="stat-card-label">Monthly SIP</span>
+                        <span class="stat-card-value" id="port-sip">₹0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Portfolio Breakdown</h3>
+                    </div>
+                    <div id="portfolio-breakdown">
+                        <div class="empty-state">
+                            <span>📈</span>
+                            <p>Add investment data in Assets section</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recommended Allocation by Age</h3>
+                    </div>
+                    <div id="recommended-allocation">
+                        <div class="empty-state">
+                            <span>🎯</span>
+                            <p>Enter your age to see recommended allocation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>SIP Goal Calculator</h3>
+                </div>
+                <div class="sip-calculator">
+                    <div class="sip-inputs">
+                        <div class="input-row">
+                            <label>Monthly SIP Amount (₹)</label>
+                            <input type="number" id="sip_amount" placeholder="5000" oninput="calculateSIP()">
+                        </div>
+                        <div class="input-row">
+                            <label>Expected Annual Return (%)</label>
+                            <input type="number" id="sip_return" placeholder="12" oninput="calculateSIP()">
+                        </div>
+                        <div class="input-row">
+                            <label>Investment Period (Years)</label>
+                            <input type="number" id="sip_years" placeholder="10" oninput="calculateSIP()">
+                        </div>
+                    </div>
+                    <div class="sip-results">
+                        <div class="sip-result-item">
+                            <span class="sip-result-label">Total Invested</span>
+                            <span class="sip-result-value" id="sip-invested">₹0</span>
+                        </div>
+                        <div class="sip-result-item">
+                            <span class="sip-result-label">Wealth Gained</span>
+                            <span class="sip-result-value" id="sip-gains">₹0</span>
+                        </div>
+                        <div class="sip-result-item highlight">
+                            <span class="sip-result-label">Final Amount</span>
+                            <span class="sip-result-value" id="sip-final">₹0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GOALS SECTION -->
+        <section id="section-goals" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Add New Goal</h3>
+                </div>
+                <div class="goal-form">
+                    <div class="goal-form-row">
+                        <div class="input-row">
+                            <label>Goal Name</label>
+                            <input type="text" id="goal_name" placeholder="Buy a House">
+                        </div>
+                        <div class="input-row">
+                            <label>Target Amount (₹)</label>
+                            <input type="number" id="goal_amount" placeholder="5000000">
+                        </div>
+                        <div class="input-row">
+                            <label>Target Year</label>
+                            <input type="number" id="goal_year" placeholder="2030">
+                        </div>
+                        <div class="input-row">
+                            <label>Already Saved (₹)</label>
+                            <input type="number" id="goal_saved" placeholder="0">
+                        </div>
+                    </div>
+                    <button class="btn-primary-small" onclick="addGoal()">
+                        Add Goal
+                    </button>
+                </div>
+            </div>
+
+            <div class="goals-list" id="goals-list">
+                <div class="empty-state">
+                    <span>🎯</span>
+                    <p>No goals yet. Add your first goal above!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSIGHTS SECTION -->
+        <section id="section-insights" class="content-section">
+            <div class="insights-header">
+                <div class="ai-badge">AXIOM AI ENGINE</div>
+                <h2>Your Personalized Financial Insights</h2>
+                <p>Based on your actual data</p>
+            </div>
+            <div class="insights-grid" id="full-insights">
+                <div class="empty-state full-width">
+                    <span>🤖</span>
+                    <p>Add your financial data to get AI insights</p>
+                    <button class="btn-primary-small" onclick="showSection('assets')">
+                        Add Assets
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RISK SECTION -->
+        <section id="section-risk" class="content-section">
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Risk Assessment</h3>
+                    </div>
+                    <div class="risk-meter">
+                        <div class="risk-bar-container">
+                            <div class="risk-bar" id="risk-bar" style="left: 0%"></div>
+                        </div>
+                        <div class="risk-labels">
+                            <span>Conservative</span>
+                            <span>Moderate</span>
+                            <span>Aggressive</span>
+                        </div>
+                    </div>
+                    <div class="risk-score-display">
+                        <span class="risk-score-number" id="risk-score-number">--</span>
+                        <span class="risk-score-text" id="risk-score-text">
+                            Add data for risk assessment
+                        </span>
+                    </div>
+                    <div class="risk-factors" id="risk-factors">
+                        <div class="empty-state">
+                            <p>Add financial data to see risk factors</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>EMI Affordability Check</h3>
+                    </div>
+                    <div class="input-row">
+                        <label>Loan Amount (₹)</label>
+                        <input type="number" id="loan_amount_check" 
+                               placeholder="1000000" oninput="checkEMI()">
+                    </div>
+                    <div class="input-row">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="loan_rate_check" 
+                               placeholder="8.5" oninput="checkEMI()">
+                    </div>
+                    <div class="input-row">
+                        <label>Tenure (Years)</label>
+                        <input type="number" id="loan_tenure_check" 
+                               placeholder="20" oninput="checkEMI()">
+                    </div>
+                    <div class="emi-results">
+                        <div class="emi-result">
+                            <span>Monthly EMI</span>
+                            <span class="emi-value" id="emi-monthly">₹0</span>
+                        </div>
+                        <div class="emi-result">
+                            <span>Total Interest</span>
+                            <span class="emi-value" id="emi-interest">₹0</span>
+                        </div>
+                        <div class="emi-result">
+                            <span>Total Payment</span>
+                            <span class="emi-value" id="emi-total">₹0</span>
+                        </div>
+                        <div class="emi-result highlight">
+                            <span>Affordability</span>
+                            <span id="emi-afford-status">Enter income first</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Insurance Coverage Check</h3>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <div class="input-row">
+                        <label>Life Insurance Cover (₹)</label>
+                        <input type="number" id="life_insurance" 
+                               placeholder="0" oninput="calculateInsurance()">
+                    </div>
+                    <div class="input-row">
+                        <label>Health Insurance Cover (₹)</label>
+                        <input type="number" id="health_insurance" 
+                               placeholder="0" oninput="calculateInsurance()">
+                    </div>
+                </div>
+                <div id="insurance-analysis">
+                    <div class="empty-state">
+                        <p>Enter insurance details to see coverage analysis</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- SCRIPTS - ORDER MATTERS -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
